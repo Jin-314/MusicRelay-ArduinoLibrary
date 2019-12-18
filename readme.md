@@ -18,8 +18,11 @@ Relay Relay(pin, 10);
 ~~~
 ## sing
 You can sing Relay by designating time (milli seconds) first argument
+
 And at second argument, you must designate note
+
 And at final argument, you must designate tempo
+
 ~~~bash
 Relay.sing(3000, 4, 120);
 Relay.sing(3000, 4000, 4, 120);
