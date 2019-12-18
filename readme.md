@@ -5,6 +5,7 @@ A libarary to controll Relay.
 2. Add Library
 
 Sketch -> Include library -> Add .ZIP Library...
+![image](https://user-images.githubusercontent.com/58265068/71096722-2680d100-21f2-11ea-8b55-8a70f5b19fec.png)
 
 3. Select downloaded folder and Click "Open" button.
 # Useage
