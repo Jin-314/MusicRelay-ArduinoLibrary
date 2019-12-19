@@ -1,5 +1,5 @@
 # RelayController
-A libarary to controll Relay.
+A libarary to controll Relay for MusicRelay.
 # Install to Arduino IDE
 1. Download ZIP
 2. Add Library
