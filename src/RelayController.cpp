@@ -24,8 +24,14 @@ void Relay::sing(unsigned int Onkai1, unsigned int Onkai2, unsigned int Onkai3, 
 	_tmp = tmp;
 	long msecon = 0;
 	switch (Ompu) {
+	case 32:
+		msecon = (long)60 * (long)1000 / (long)_tmp / (long)8;
+		break;
 	case 16:
 		msecon = (long)60 * (long)1000 / (long)_tmp / (long)4;
+		break;
+	case 12:
+		msecon = (long)60 * (long)1000 / (long)_tmp / (long)3;
 		break;
 	case 8:
 		msecon = (long)60 * (long)1000 / (long)_tmp / (long)2;
@@ -57,74 +63,83 @@ void Relay::sing(unsigned int Onkai1, unsigned int Onkai2, unsigned int Onkai3, 
 	unsigned long preTime11 = time;
 	for (; time - preTime < msecon * 1000;) {
 		time = micros();
-		if (time - preTime2 < Onkai1) {
+		if (time - preTime2 < Onkai1 / 2) {
 			digitalWrite(_pin[0], HIGH);
 		}
-		else {
+		else if(time - preTime2 < Onkai1){
 			digitalWrite(_pin[0], LOW);
+		}else{
 			preTime2 = time;
 		}
-		if (time - preTime3 < Onkai2) {
+		if (time - preTime3 < Onkai2 / 2) {
 			digitalWrite(_pin[1], HIGH);
 		}
-		else {
+		else if(time - preTime3 < Onkai2){
 			digitalWrite(_pin[1], LOW);
+		}else{
 			preTime3 = time;
 		}
-		if (time - preTime4 < Onkai3) {
+		if (time - preTime4 < Onkai3 / 2) {
 			digitalWrite(_pin[2], HIGH);
 		}
-		else {
+		else if(time - preTime4 < Onkai3){
 			digitalWrite(_pin[2], LOW);
+		}else{
 			preTime4 = time;
 		}
-		if (time - preTime5 < Onkai4) {
+		if (time - preTime5 < Onkai4 / 2) {
 			digitalWrite(_pin[3], HIGH);
 		}
-		else {
+		else if(time - preTime5 < Onkai4){
 			digitalWrite(_pin[3], LOW);
+		}else{
 			preTime5 = time;
 		}
-		if (time - preTime6 < Onkai5) {
+		if (time - preTime6 < Onkai5 / 2) {
 			digitalWrite(_pin[4], HIGH);
 		}
-		else {
+		else if(time - preTime6 < Onkai5){
 			digitalWrite(_pin[4], LOW);
+		}else{
 			preTime6 = time;
 		}
-		if (time - preTime7 < Onkai6) {
+		if (time - preTime7 < Onkai6 / 2) {
 			digitalWrite(_pin[5], HIGH);
-		}
-		else {
+		}else if(time - preTime7 < Onkai6){
 			digitalWrite(_pin[5], LOW);
+		}else{
 			preTime7 = time;
 		}
-		if (time - preTime8 < Onkai7) {
+		if (time - preTime8 < Onkai7 / 2) {
 			digitalWrite(_pin[6], HIGH);
 		}
-		else {
+		else if(time - preTime8 < Onkai7){
 			digitalWrite(_pin[6], LOW);
+		}else{
 			preTime8 = time;
 		}
-		if (time - preTime9 < Onkai8) {
+		if (time - preTime9 < Onkai8 / 2) {
 			digitalWrite(_pin[7], HIGH);
 		}
-		else {
+		else if(time - preTime9 < Onkai8){
 			digitalWrite(_pin[7], LOW);
+		}else{
 			preTime9 = time;
 		}
-		if (time - preTime10 < Onkai9) {
+		if (time - preTime10 < Onkai9 / 2) {
 			digitalWrite(_pin[8], HIGH);
 		}
-		else {
+		else if(time - preTime10 < Onkai9){
 			digitalWrite(_pin[8], LOW);
+		}else{
 			preTime10 = time;
 		}
-		if (time - preTime11 < Onkai10) {
+		if (time - preTime11 < Onkai10 / 2) {
 			digitalWrite(_pin[9], HIGH);
 		}
-		else {
+		else if(time - preTime11 < Onkai10){
 			digitalWrite(_pin[9], LOW);
+		}else{
 			preTime11 = time;
 		}
 	}
