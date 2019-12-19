@@ -17,7 +17,7 @@ int pin[10] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 Relay Relay(pin, 10);
 ~~~
 ## sing
-You can sing Relay by designating time (milli seconds) first argument
+You can ring Relay by designating time (milli seconds) first argument
 
 And at second argument, you must designate note
 
