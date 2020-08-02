@@ -17,7 +17,7 @@ void setup() {
 void loop() {
   unsigned long mtime = micros();
   unsigned long pretime = mtime;
-  for(int i = 0; i > 4; i++){
+  for(int i = 0; i < 5; i++){
     if(mtime - pretime < parts[i] / 2){
       digitalWrite(pin[i], HIGH);
       digitalWrite(pin[i + 5], HIGH);
