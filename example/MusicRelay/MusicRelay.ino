@@ -82,5 +82,4 @@ int decorder(){
   }
   
   return result;
-  
 }
