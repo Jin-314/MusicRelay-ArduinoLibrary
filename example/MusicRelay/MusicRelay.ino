@@ -1,5 +1,4 @@
 int pin[10] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-String eventType = "";
 static int buff[20] = {0};
 typedef struct {
   int period;
@@ -12,18 +11,18 @@ partData parts[10] = {0, 0, 0, 0, false};
 int index = 0;
 int cnt1 = 0;
 int cnt2 = 0;
-char inByte = 0;
+signed char inByte = 0;
 
 void setup() {
   //Serial Initialize  
   Serial.begin(2000000);
+  //TIMSK0= 0;
   for(int i = 0; i < 10; i++){
     pinMode(pin[i], OUTPUT);
   }
 }
 
 void loop() {
-  char message[5];
   int partIdx = CountParts();
   //同時に鳴らすパートの数分繰り返す
   for(int i = 0; i < partIdx; i++){
@@ -32,22 +31,35 @@ void loop() {
       //各パートごとに鳴らすか鳴らさないか判定
       if(!parts[i].flug && 
             parts[i].mtime - parts[i].pretime < (double)parts[i].period * (parts[i].duty / 100)){
-        digitalWrite(pin[i], HIGH);
+        for(int j = 0; j * partIdx < 10; j++){
+          if(i + j * partIdx < 8)
+            PORTD = _BV(i + j * partIdx);
+          else
+            PORTB = _BV(i + j * partIdx);
+        }
         parts[i].flug = true;
       }else if(parts[i].flug && 
             parts[i].mtime - parts[i].pretime > (double)parts[i].period * (parts[i].duty / 100)){
-        digitalWrite(pin[i], LOW);
+        for(int j = 0; j * partIdx < 10; j++){
+          if(i + j * partIdx < 8)
+            PORTD = ~_BV(i + j * partIdx);
+          else
+            PORTB = ~_BV(i + j * partIdx);
+        }
         parts[i].flug = false;
       }else if(parts[i].mtime - parts[i].pretime > parts[i].period){
         parts[i].pretime = parts[i].mtime;
       }      
     }
-  }
+  }  
+}
+
+void serialEvent(){
+  String eventType = "";
+  char message[5];
   //シリアルに音階の周期が送られてきたら適宜変更
-  while(Serial.available()){
+  while((inByte = Serial.read()) != -1){
     
-    inByte = Serial.read();
-      
     if(inByte != 44){
       if(cnt2 == 1){
         message[cnt1] = inByte;
@@ -95,7 +107,6 @@ void loop() {
     }
   }
 }
-
 //decode ascii to number
 int decorder(){
   
