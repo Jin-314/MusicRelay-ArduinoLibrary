@@ -23,7 +23,6 @@ void setup() {
 }
 
 void loop() {
-  char message[5];
   int partIdx = CountParts();
   //同時に鳴らすパートの数分繰り返す
   for(int i = 0; i < partIdx; i++){
@@ -43,6 +42,10 @@ void loop() {
       }      
     }
   }
+}
+
+void serialEvent(){
+  char message[5];
   //シリアルに音階の周期が送られてきたら適宜変更
   while(Serial.available()){
     
