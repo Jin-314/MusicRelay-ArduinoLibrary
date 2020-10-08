@@ -1,6 +1,5 @@
 static uint8_t buff[20] = {0};
 
-float duty[10] = {0};
 int parts[10] = {0};
 uint8_t index = 0;
 uint8_t cnt1 = 0;
@@ -17,36 +16,40 @@ void loop() {
   bool flug[10] = {false};
   unsigned long pretime[10] = {0};
   unsigned long mtime = 0;
-  int partIdx = 0;
+  uint8_t partIdx = 0;
   byte byted[10] = {0}, byteb[10] = {0};
   uint8_t cnt2 = 0;
+  int onTime[10] = {0};
+
   while(1){
     String eventType = "";
     char message[5];
     uint8_t tmp;
+    mtime = micros();
     //同時に鳴らすパートの数分繰り返す
-    for(int i = 0; i < partIdx; i++){
+    unsigned long timer1 = micros();
+    for(byte i = 0; i < partIdx; i++){
       if(parts[i] > 0){
-        /*for(int j = 0; (tmp = (i + 2) + j * partIdx) < 12; j++){
-          if(tmp < 10)
-            if(tmp < 8)
-              byted[i] |= 1 << tmp;
-            else
-              byteb[i] |= 1 << (tmp - 8);
-        }*/
+        //個数制御、空いてるリレーはどんどん鳴らす
+        for(byte j = 0; (tmp = (i + 2) + j * partIdx) < 12; j++){
+            if(tmp < 10)
+              if(tmp < 8)
+                byted[i] |= 1 << tmp;
+              else
+                byteb[i] |= 1 << (tmp - 8);
+        }
+        /*//個数制御なしver
         if(i < 8)
           byted[i] |= 1 << (i + 2);
         else
-          byteb[i] |= 1 << (i - 8);
-        mtime = micros();
-        int diff = mtime - pretime[i],
-          onTime = (float)parts[i] * duty[i] / 100.00;
+          byteb[i] |= 1 << (i - 8);*/
+        int diff = mtime - pretime[i];
         //各パートごとに鳴らすか鳴らさないか判定
-        if(!flug[i] && diff < onTime){
+        if(!flug[i] && diff < onTime[i]){
           flug[i] = true;
           PORTD |= byted[i];
           PORTB |= byteb[i];
-        }else if(flug[i] && diff > onTime){
+        }else if(flug[i] && diff > onTime[i]){
           flug[i] = false;
           PORTD &= ~byted[i];
           PORTB &= ~byteb[i];
@@ -78,6 +81,7 @@ void loop() {
               cnt2 = 0;
               parts[index - 1] = 0;
               partIdx = CountParts();
+              onTime[index - 1] = 0;
               byted[index - 1] = 0;
               byteb[index - 1] = 0;
             }else{
@@ -87,6 +91,7 @@ void loop() {
           case 2:                   //Final data is period
             parts[index - 1] = decorder();
             partIdx = CountParts();
+            float duty[10] = {0};
             //デューティ比設定
             if(parts[index - 1] <= 3500 && parts[index - 1] >= 2000){        
               duty[index - 1] = 100.00 - map(parts[index - 1], 2000, 3500, 20, 70);
@@ -102,12 +107,16 @@ void loop() {
               else
                 duty[index - 1] = 90;
             }
+            duty[index - 1] /= 100.00;
+            onTime[index - 1] = (float)parts[index - 1] * duty[index - 1];
             cnt2 = 0;
             break;
         }
         cnt1 = 0;
       }
     }
+    unsigned long timer2 = micros();
+    Serial.println(timer2 - timer1);
   }
 }
 //decode ascii to number
