@@ -27,22 +27,8 @@ void loop() {
     uint8_t tmp;
     mtime = micros();
     //同時に鳴らすパートの数分繰り返す
-    unsigned long timer1 = micros();
     for(byte i = 0; i < partIdx; i++){
       if(parts[i] > 0){
-        //個数制御、空いてるリレーはどんどん鳴らす
-        for(byte j = 0; (tmp = (i + 2) + j * partIdx) < 12; j++){
-            if(tmp < 10)
-              if(tmp < 8)
-                byted[i] |= 1 << tmp;
-              else
-                byteb[i] |= 1 << (tmp - 8);
-        }
-        /*//個数制御なしver
-        if(i < 8)
-          byted[i] |= 1 << (i + 2);
-        else
-          byteb[i] |= 1 << (i - 8);*/
         int diff = mtime - pretime[i];
         //各パートごとに鳴らすか鳴らさないか判定
         if(!flug[i] && diff < onTime[i]){
@@ -91,6 +77,19 @@ void loop() {
           case 2:                   //Final data is period
             parts[index - 1] = decorder();
             partIdx = CountParts();
+            //個数制御、空いてるリレーはどんどん鳴らす
+            for(byte j = 0; (tmp = (index + 1) + j * partIdx) < 12; j++){
+                if(tmp < 10)
+                  if(tmp < 8)
+                    byted[index - 1] |= 1 << tmp;
+                  else
+                    byteb[index - 1] |= 1 << (tmp - 8);
+            }
+            /*//個数制御なしver
+            if(index - 1 < 8)
+              byted[index - 1] |= 1 << (i + 1);
+            else
+              byteb[index - 1] |= 1 << (i - 9);*/
             float duty[10] = {0};
             //デューティ比設定
             if(parts[index - 1] <= 3500 && parts[index - 1] >= 2000){        
@@ -115,8 +114,6 @@ void loop() {
         cnt1 = 0;
       }
     }
-    unsigned long timer2 = micros();
-    Serial.println(timer2 - timer1);
   }
 }
 //decode ascii to number
